@@ -9,5 +9,6 @@ def hello_world():
     return "<p>Hello, World!</p>"
 
 app.register_blueprint(profile_view)
+app.register_blueprint(profile)
 
 app.run(port=3000)
