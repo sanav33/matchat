@@ -4,8 +4,9 @@ import pymongo
 
 @app.route('/match', methods=['POST'])
 def match():
-    client = pymongo.MongoClient('mongodb://testjkerwdkjrds')
-    db = pymongo.database.Database(client, 'db')
+    client = pymongo.MongoClient(
+        'mongodb+srv://admin:admin@matchatcluster.mixvt.mongodb.net/?retryWrites=true&w=majority')
+    db = pymongo.database.Database(client, 'matchat')
     profiles = db['profiles']
     internsCursor = profiles.find({"opt_in": True, "is_intern": True}, projection=[
                                   "prefers", "met_with", "timezone"])
@@ -60,7 +61,7 @@ def match():
         elif matches_fte_ftes and fte['prefers']['ftes'] and not fte['prefers']['interns']:
             # find an fte that only wants ftes BUT is not the current fte
             for f in matches_fte_ftes:
-                if f == fte['_id'] or f in assignment or already_met_recently(ftes[f], fte):
+                if f == fte['_id'] or f in assignments or already_met_recently(ftes[f], fte):
                     continue
                 assignee = f
                 break
@@ -129,8 +130,8 @@ def match():
 
 # add assignments to met_with field in DB
 # send slack notifs
-    for assignment in assignments:
-        if
+    # for assignment in assignments:
+    #     if
 
 
 def already_met_recently(employee_1, employee_2) -> bool:
