@@ -1,6 +1,6 @@
 venv/
-/include
-/bin
-/env
-/__pycache__
-/lib
+include
+bin
+env
+__pycache__
+lib
