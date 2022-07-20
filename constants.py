@@ -26,6 +26,7 @@ PROFILE_MODAL_DICT = {
 		},
 		{
 			"type": "input",
+            "block_id": "emp_name",
 			"element": {
 				"type": "plain_text_input",
 				"action_id": "plain_text_input-action"
@@ -38,6 +39,7 @@ PROFILE_MODAL_DICT = {
 		},
 		{
 			"type": "input",
+            "block_id": "emp_type",
 			"element": {
 				"type": "static_select",
 				"placeholder": {
@@ -73,6 +75,7 @@ PROFILE_MODAL_DICT = {
 		},
 		{
 			"type": "input",
+            "block_id": "emp_team",
 			"element": {
 				"type": "static_select",
 				"placeholder": {
@@ -121,6 +124,42 @@ PROFILE_MODAL_DICT = {
 				"text": "Team",
 				"emoji": True
 			}
+		},
+        {
+			"type": "input",
+			"block_id": "preference",
+			"element": {
+				"type": "multi_static_select",
+				"placeholder": {
+					"type": "plain_text",
+					"text": "Select options",
+					"emoji": True
+				},
+				"options": [
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "Interns",
+							"emoji": True
+						},
+						"value": "value-0"
+					},
+					{
+						"text": {
+							"type": "plain_text",
+							"text": "Full-time Employees",
+							"emoji": True
+						},
+						"value": "value-1"
+					}
+				],
+				"action_id": "preference-multi_static_select-action"
+			},
+			"label": {
+				"type": "plain_text",
+				"text": "Label",
+				"emoji": True
+			}
 		}
-	]
+    ]
 }

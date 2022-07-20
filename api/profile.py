@@ -3,23 +3,53 @@ from flask import request, Blueprint, Response
 from os import environ
 import requests
 from constants import PROFILE_MODAL_DICT
+from models.profile import Profile
+from pymongo import MongoClient
 
 SLACK_API_URL = environ.get("SLACK_API_URL")
 ATLAS_CONNECTION_STR = environ.get("ATLAS_CONNECTION_STR")
 
-profile = Blueprint('profile', __name__, template_folder='templates')
+mongo_client = MongoClient(ATLAS_CONNECTION_STR)
+
+profile = Blueprint('profile', __name__)
 @profile.post('/profile')
 def post_profile_handler():
     json_body = request.json
+    values = json_body["view"]["state"]["values"]
     
-    slack_id = json_body["user"]["id"]
+    profile = Profile(
+        json_body["user"]["id"],
+        values["emp_name"]["plain_text_input-action"]["value"],
+        values["emp_type"]["static_select-action"]["value"],
+        values["emp_team"]["static_select-action"]["value"],
+        "Interns" in values["preference"]["preference-multi_static_select-action"]["value"],
+        "Full-time Employees" in values["preference"]["preference-multi_static_select-action"]["value"],
+    )
 
-    # if connection to db successful
-    status_code = profile.flask.Response(status=200)
-    return status_code
+    thread_update_profile = Thread(
+        target=update_profile,
+        kwargs={"profile": profile}
+    )
+    thread_update_profile.start()
+
+    return Response(status=200)
 
 # Handler when user updates profile, TODO: this
-def update_profile(slack_id, profile_info):
+def update_profile(profile):
+    profiles_coll = mongo_client.matchat.profiles
+    profile_doc = profiles_coll.find_one(profile.slack_id)
+
+    acknowledged = None
+    
+    if profile_doc is None:
+        acknowledged = profiles_coll.insert_one(profile_doc)
+    else:
+        acknowledged = profiles_coll.update_one(
+            {"slack_id": profile.slack_id},
+            profile.getProfileInfoDict()
+        )
+
+    print(f"updated profiles collections {acknowledged}")
     return
 
 # Get information from profile. TODO: this
