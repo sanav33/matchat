@@ -16,4 +16,4 @@ app.register_blueprint(profile)
 app.register_blueprint(match_bp)
 app.register_blueprint(home)
 
-app.run(port=5000)
+app.run()
