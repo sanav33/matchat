@@ -36,7 +36,6 @@ class Profile:
 
     def getProfileInfoDict(self):
         return {
-            "name": self.name,
             "is_intern": self.is_intern,
             "team_id": self.team_id,
             "prefers": self.prefers.copy(),
