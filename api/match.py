@@ -3,7 +3,9 @@ import pymongo
 
 match_bp = Blueprint('match', __name__)
 
-
+# TODO: add assignments to met_with field in DB- don't implement until we fix the matching algo
+# TODO: check if ppl are on same team
+# TODO: send slack notifs
 @match_bp.route('/match', methods=['POST'])
 def match():
     client = pymongo.MongoClient(
@@ -19,18 +21,18 @@ def match():
     assignments = {}
     for intern in internsCursor:
         interns[intern['_id']] = {
+            'name': intern['name'],
             'prefers': intern['prefers'],
             'met_with': intern['met_with'],
             'timezone': intern['timezone'],
-            'name': intern['name'],
         }
 
     for fte in ftesCursor:
         ftes[fte['_id']] = {
+            'name': fte['name'],
             'prefers': fte['prefers'],
             'met_with': fte['met_with'],
             'timezone': fte['timezone'],
-            'name': fte['name'],
         }
 
     print('interns: ', interns)
@@ -139,10 +141,6 @@ def match():
 
     return jsonify(success=True, status_code=200)
 
-# TODO: add assignments to met_with field in DB
-# TODO: check if ppl are on same team
-# send slack notifs
-
 
 def already_met_recently(employee_1, employee_2) -> bool:
     for met_with in employee_1['met_with']:
@@ -155,7 +153,9 @@ def already_met_recently(employee_1, employee_2) -> bool:
 
     return False
 
-
+"""
+Prints out the names of everyone who was paired up. For development purposes only.
+"""
 def print_assignments(assignments, ftes, interns):
     ftes.update(interns)
     print(ftes)
