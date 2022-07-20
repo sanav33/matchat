@@ -1,1 +1,6 @@
 venv/
+/include
+/bin
+/env
+/__pycache__
+/lib
