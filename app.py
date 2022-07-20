@@ -1,7 +1,6 @@
 import profile
 from flask import Flask
 from api.profile import profile, profile_view
-
 from api.match import match_bp
 
 app = Flask(__name__)

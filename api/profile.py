@@ -1,5 +1,5 @@
 from threading import Thread
-from flask import request, Blueprint, Response
+from flask import request, Blueprint, Response, json
 from os import environ
 import requests
 from constants import PROFILE_MODAL_DICT
@@ -54,8 +54,18 @@ def update_profile(profile):
 
 # Get information from profile. TODO: this
 @profile.get('/profile')
-def get_profile_handler(profile):
-    pass
+def get_profile_handler():
+    json_body = request.json
+    user_id = Profile(json_body["user"]["id"])
+
+    # extract from profiles_coll
+    profile_doc = profiles_coll.find_one(profile.slack_id)
+
+    # extract user information
+
+    # edge case: user does not exist in collection, return empty
+
+
     
 
 
