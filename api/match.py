@@ -1,9 +1,10 @@
 import bson
 from flask import Blueprint, jsonify
-from hungarian_algorithm import algorithm
 from os import environ
 import pymongo
 import random
+from scipy.sparse import csr_matrix
+from scipy.sparse.csgraph import maximum_bipartite_matching
 
 match_bp = Blueprint('match', __name__)
 
@@ -13,10 +14,9 @@ match_bp = Blueprint('match', __name__)
 @match_bp.route('/match', methods=['POST'])
 def match():
 
-    input_graph = create_graph()
-    print(input_graph)
-    pairs = algorithm.find_matching(input_graph, matching_type='min', return_type='list')
-    print(pairs)
+    graph, mappings = create_graph()
+    graph = csr_matrix(graph)
+    print(maximum_bipartite_matching(graph, perm_type='column'))
     
     return jsonify(success=True, status_code=200)
 
@@ -27,19 +27,26 @@ def create_graph() -> dict:
     client = pymongo.MongoClient(ATLAS_CONNECTION_STR)
     db = pymongo.database.Database(client, 'matchat')
     profiles = db['profiles']
-    interns = profiles.find({"opt_in": True, "is_intern": True}, projection=[
-        "prefers", "met_with", "name"])
-    ftes = profiles.find({"opt_in": True, "is_intern": False}, projection=[
-        "prefers", "met_with", "name"])
+    interns = list(profiles.find({"opt_in": True, "is_intern": True}, projection=[
+        "prefers", "met_with", "name"]))
+    ftes = list(profiles.find({"opt_in": True, "is_intern": False}, projection=[
+        "prefers", "met_with", "name"]))
     
-    fte_ids = {str(f['_id']): 1 for f in ftes}
+    # fte_ids = {str(f['_id']): 1 for f in ftes}
 
     legal_matches = {}
+    mappings = {}
+    graph = [[1 for _ in ftes] for _ in interns]
 
-    for i in interns:
-        legal_matches[str(i['_id'])] = fte_ids.copy()
-        
-    return legal_matches
+    for i in range(len(interns)):
+        mappings[interns[i]['_id']] = i
+    
+    for j in range(len(ftes)):
+        mappings[ftes[j]['_id']] = j
+    
+    # for i in interns:
+    #     legal_matches[str(i['_id'])] = fte_ids.copy()
+    return graph, mappings
 
 
 def already_met_recently(employee_1, employee_2) -> bool:
@@ -54,9 +61,9 @@ def already_met_recently(employee_1, employee_2) -> bool:
     return False
 
 
-'''
+"""
 Prints out the names of everyone who was paired up. For development purposes only.
-'''
+"""
 def print_assignments(assignments, ftes, interns):
     ftes.update(interns)
     for x, y in assignments.items():
