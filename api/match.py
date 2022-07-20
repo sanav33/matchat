@@ -1,5 +1,7 @@
+from typing import List
 from flask import Blueprint, jsonify
 import pymongo
+import random
 
 match_bp = Blueprint('match', __name__)
 
@@ -20,13 +22,26 @@ def match_random():
         "prefers", "met_with", "name"]))
 
     assignments = {}
+    no_matches = []
+    successful_matching = False
+    while successful_matching is False:
+        successful_matching = match_interns_fte(interns, ftes, assignments, no_matches)
+    
+    return jsonify(success=True, status_code=200)
+
+def match_interns_fte(interns: list, ftes: list, assignments: dict, no_matches: list) -> bool:
+    random.shuffle(interns)
+    random.shuffle(ftes)
+
     for i, (intern, fte) in enumerate(zip(interns, ftes)):
-        assignments[intern['_id']] = fte
-        assignments[fte['_id']] = intern
+            if already_met_recently(intern, fte):
+                return False
+
+            assignments[intern['_id']] = fte
+            assignments[fte['_id']] = intern
 
     i += 1
 
-    no_matches = []
     # guaranteed that only one or none of these lists will have leftover people
     while i < len(interns):
         no_matches.append(interns[i])
@@ -39,7 +54,8 @@ def match_random():
     print(assignments)
     print("\n\n\nNOT MATCHED:")
     print(no_matches)
-    return jsonify(success=True, status_code=200)
+
+    return True
 
 
 def match():
