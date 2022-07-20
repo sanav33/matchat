@@ -1,5 +1,6 @@
 import bson
 from flask import Blueprint, jsonify
+from hungarian_algorithm import algorithm
 from os import environ
 import pymongo
 import random
@@ -11,7 +12,11 @@ match_bp = Blueprint('match', __name__)
 # TODO: send slack notifs
 @match_bp.route('/match', methods=['POST'])
 def match():
-    print(create_graph())
+
+    input_graph = create_graph()
+    print(input_graph)
+    pairs = algorithm.find_matching(input_graph, matching_type='min', return_type='list')
+    print(pairs)
     
     return jsonify(success=True, status_code=200)
 
@@ -27,26 +32,14 @@ def create_graph() -> dict:
     ftes = profiles.find({"opt_in": True, "is_intern": False}, projection=[
         "prefers", "met_with", "name"])
     
-    fte_ids = set([f['_id'] for f in ftes])
-    intern_ids = set([i['_id'] for i in interns])
+    fte_ids = {str(f['_id']): 1 for f in ftes}
 
-    legal_intern_to_fte_matches = {}
-    legal_fte_to_intern_matches = {}
-
-    src = bson.ObjectId()
-    sink = bson.ObjectId()
+    legal_matches = {}
 
     for i in interns:
-        legal_intern_to_fte_matches[i['_id']] = fte_ids.copy()
+        legal_matches[str(i['_id'])] = fte_ids.copy()
         
-    for f in ftes:
-        legal_fte_to_intern_matches[f['_id']] = intern_ids.copy().union(set([sink]))
-
-    legal_intern_to_fte_matches[src] = fte_ids.copy()
-    legal_fte_to_intern_matches[sink] = intern_ids.copy()
-    
-    legal_intern_to_fte_matches.update(legal_fte_to_intern_matches)
-    return legal_intern_to_fte_matches
+    return legal_matches
 
 
 def already_met_recently(employee_1, employee_2) -> bool:
@@ -61,9 +54,9 @@ def already_met_recently(employee_1, employee_2) -> bool:
     return False
 
 
-"""
+'''
 Prints out the names of everyone who was paired up. For development purposes only.
-"""
+'''
 def print_assignments(assignments, ftes, interns):
     ftes.update(interns)
     for x, y in assignments.items():
