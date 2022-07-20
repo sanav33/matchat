@@ -7,7 +7,10 @@ class Profile:
         is_intern: bool, 
         team_id: str, 
         prefers_interns: bool,
-        prefers_ftes: bool
+        prefers_ftes: bool,
+        is_active: bool = True,
+        opt_in: bool = False,
+        met_with: list = list()
         ) -> None:
             self.slack_id = slack_id
             self.name = name
@@ -18,9 +21,9 @@ class Profile:
                 "ftes": prefers_ftes
             }
 
-            self.is_active = True
-            self.opt_in = False
-            self.met_with = list()
+            self.is_active = is_active
+            self.opt_in = opt_in
+            self.met_with = met_with
 
     def getObjDict(self):
         return {

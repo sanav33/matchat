@@ -58,7 +58,7 @@ UNCREATED_PROFILE_HOME = {
 					"text": {
 						"type": "plain_text",
 						"text": "Create Profile",
-						"emoji": true
+						"emoji": True
 					},
 					"value": "click_me_123",
 					"action_id": "actionId-0"

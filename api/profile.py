@@ -52,22 +52,6 @@ def update_profile(profile):
     print(f"updated profiles collections {acknowledged}")
     return
 
-# Get information from profile. TODO: this
-@profile.get('/profile')
-def get_profile_handler():
-    json_body = request.json
-    user_id = Profile(json_body["user"]["id"])
-
-    # extract from profiles_coll
-    profile_doc = profiles_coll.find_one(profile.slack_id)
-
-    # extract user information
-
-    # edge case: user does not exist in collection, return empty
-
-
-    
-
 
 profile_view = Blueprint('profile_view', __name__)
 @profile_view.post('/profile_view')
