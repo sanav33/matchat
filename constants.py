@@ -26,19 +26,6 @@ PROFILE_MODAL_DICT = {
 		},
 		{
 			"type": "input",
-            "block_id": "emp_name",
-			"element": {
-				"type": "plain_text_input",
-				"action_id": "plain_text_input-action"
-			},
-			"label": {
-				"type": "plain_text",
-				"text": "Name",
-				"emoji": True
-			}
-		},
-		{
-			"type": "input",
             "block_id": "emp_type",
 			"element": {
 				"type": "static_select",
@@ -70,58 +57,6 @@ PROFILE_MODAL_DICT = {
 			"label": {
 				"type": "plain_text",
 				"text": "Employee Type",
-				"emoji": True
-			}
-		},
-		{
-			"type": "input",
-            "block_id": "emp_team",
-			"element": {
-				"type": "static_select",
-				"placeholder": {
-					"type": "plain_text",
-					"text": "Select an item",
-					"emoji": True
-				},
-				"options": [
-					{
-						"text": {
-							"type": "plain_text",
-							"text": "Baas-Sync",
-							"emoji": True
-						},
-						"value": "value-0"
-					},
-					{
-						"text": {
-							"type": "plain_text",
-							"text": "Core Server",
-							"emoji": True
-						},
-						"value": "value-1"
-					},
-					{
-						"text": {
-							"type": "plain_text",
-							"text": "Rust Drivers",
-							"emoji": True
-						},
-						"value": "value-2"
-					},
-					{
-						"text": {
-							"type": "plain_text",
-							"text": "Database Experience",
-							"emoji": True
-						},
-						"value": "value-3"
-					}
-				],
-				"action_id": "static_select-action"
-			},
-			"label": {
-				"type": "plain_text",
-				"text": "Team",
 				"emoji": True
 			}
 		},

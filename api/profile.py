@@ -19,9 +19,9 @@ def post_profile_handler():
     
     profile = Profile(
         json_body["user"]["id"],
-        values["emp_name"]["plain_text_input-action"]["value"],
-        values["emp_type"]["static_select-action"]["value"],
-        values["emp_team"]["static_select-action"]["value"],
+        json_body["user"]["name"],
+        values["emp_type"]["static_select-action"]["value"] == "Intern",
+        json_body["user"]["team_id"],
         "Interns" in values["preference"]["preference-multi_static_select-action"]["value"],
         "Full-time Employees" in values["preference"]["preference-multi_static_select-action"]["value"],
     )
@@ -42,7 +42,7 @@ def update_profile(profile):
     acknowledged = None
     
     if profile_doc is None:
-        acknowledged = profiles_coll.insert_one(profile_doc)
+        acknowledged = profiles_coll.insert_one(profile.getObjDict())
     else:
         acknowledged = profiles_coll.update_one(
             {"slack_id": profile.slack_id},
@@ -54,8 +54,8 @@ def update_profile(profile):
 
 # Get information from profile. TODO: this
 @profile.get('/profile')
-def get_profile_handler():
-    data = request.get_json()
+def get_profile_handler(profile):
+    pass
     
 
 
