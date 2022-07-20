@@ -1,5 +1,5 @@
-from typing import List
 from flask import Blueprint, jsonify
+from os import environ
 import pymongo
 import random
 
@@ -8,12 +8,11 @@ match_bp = Blueprint('match', __name__)
 # TODO: add assignments to met_with field in DB- don't implement until we fix the matching algo
 # TODO: check if ppl are on same team
 # TODO: send slack notifs
-
-
 @match_bp.route('/match', methods=['POST'])
 def match_random():
-    client = pymongo.MongoClient(
-        'mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.5.0')
+    ATLAS_CONNECTION_STR = environ.get("TEST_MONGO_URI")
+
+    client = pymongo.MongoClient(ATLAS_CONNECTION_STR)
     db = pymongo.database.Database(client, 'matchat')
     profiles = db['profiles']
     interns = list(profiles.find({"opt_in": True, "is_intern": True}, projection=[
@@ -24,7 +23,7 @@ def match_random():
     assignments = {}
     no_matches = []
     successful_matching = False
-    while successful_matching is False:
+    while not successful_matching:
         successful_matching = match_interns_fte(interns, ftes, assignments, no_matches)
     
     return jsonify(success=True, status_code=200)
@@ -56,6 +55,26 @@ def match_interns_fte(interns: list, ftes: list, assignments: dict, no_matches: 
     print(no_matches)
 
     return True
+
+def already_met_recently(employee_1, employee_2) -> bool:
+    for met_with in employee_1['met_with']:
+        if met_with == employee_2['_id']:
+            return True
+
+    for met_with in employee_2['met_with']:
+        if met_with == employee_1['_id']:
+            return True
+
+    return False
+
+
+"""
+Prints out the names of everyone who was paired up. For development purposes only.
+"""
+def print_assignments(assignments, ftes, interns):
+    ftes.update(interns)
+    for x, y in assignments.items():
+        print(ftes[x]['name'], '->', ftes[y]['name'])
 
 
 def match():
@@ -205,26 +224,3 @@ def match():
     print_assignments(assignments, ftes, interns)
 
     return jsonify(success=True, status_code=200)
-
-
-def already_met_recently(employee_1, employee_2) -> bool:
-    for met_with in employee_1['met_with']:
-        if met_with == employee_2['_id']:
-            return True
-
-    for met_with in employee_2['met_with']:
-        if met_with == employee_1['_id']:
-            return True
-
-    return False
-
-
-"""
-Prints out the names of everyone who was paired up. For development purposes only.
-"""
-
-
-def print_assignments(assignments, ftes, interns):
-    ftes.update(interns)
-    for x, y in assignments.items():
-        print(ftes[x]['name'], '->', ftes[y]['name'])
