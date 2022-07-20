@@ -1,4 +1,4 @@
-# TO BE RENAMED TO opt-in-send.py
+# TO BE RENAMED TO send_opt_in.py
 import logging
 import os
 # Import WebClient from Python SDK (github.com/slackapi/python-slack-sdk)
