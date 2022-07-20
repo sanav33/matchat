@@ -5,10 +5,8 @@ import os
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 
-def sendOptInHelper(client, logger, user):
-    try:
-    # Call the chat.postMessage method using the WebClient
-        blocks = [
+def genOptInBlock(user):
+        return [
             {
                         "type": "section",
                         "text": {
@@ -39,10 +37,14 @@ def sendOptInHelper(client, logger, user):
                         ]
                 }
         ]
+
+def sendOptInHelper(client, logger, user):
+    try:
+    # Call the chat.postMessage method using the WebClient
         result = client.chat_postMessage(
             channel=user['id'],
             text=":)",
-            blocks=blocks
+            blocks=genOptInBlock(user)
         )
         logger.info(result)
 
