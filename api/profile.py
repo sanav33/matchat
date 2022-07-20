@@ -5,6 +5,7 @@ import requests
 from constants import PROFILE_MODAL_DICT
 
 SLACK_API_URL = environ.get("SLACK_API_URL")
+ATLAS_CONNECTION_STR = environ.get("ATLAS_CONNECTION_STR")
 
 profile = Blueprint('profile', __name__, template_folder='templates')
 @profile.post('/profile')
