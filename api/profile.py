@@ -2,7 +2,7 @@ from threading import Thread
 from flask import request, Blueprint, Response, json
 from os import environ
 import requests
-from constants import PROFILE_MODAL_DICT
+from block_kits.profile import PROFILE_MODAL_DICT
 from models.profile import Profile
 from pymongo import MongoClient
 
