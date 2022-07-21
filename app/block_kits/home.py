@@ -1,8 +1,9 @@
 from app.models.profile import Profile
-from app.utils.constants import SLACK_USER_ID
+from app.utils.constants import SLACK_USER_ID, SLACK_BOT_TOKEN
 
 def created_profile_home(profile : Profile):
     return {
+        "token": SLACK_BOT_TOKEN,
         "user_id": SLACK_USER_ID,
         "view": {
             "type": "home",
@@ -46,8 +47,7 @@ def created_profile_home(profile : Profile):
                             "text": "Edit Profile",
                             "emoji": True
                         },
-                        # "value": "click_me_123",
-                        "value": "opt-in/Yes",
+                        "value": "click_me_123",
                         "action_id": "button-action"
                     }
                 }
@@ -56,26 +56,28 @@ def created_profile_home(profile : Profile):
 }
     
 
-UNCREATED_PROFILE_HOME = {
-    "user_id": SLACK_USER_ID,
-    "view": {
-        "type": "home",
-        "blocks": [
-            {
-                "type": "actions",
-                "elements": [
-                    {
-                        "type": "button",
-                        "text": {
-                            "type": "plain_text",
-                            "text": "Create Profile",
-                            "emoji": True
-                        },
-                        "value": "click_me_123",
-                        "action_id": "actionId-0"
-                    }
-                ]
-            }
-        ]
-    }
+def uncreated_profile_home(slack_id): 
+    return {
+        "token": SLACK_BOT_TOKEN,
+        "user_id": slack_id,
+        "view": {
+            "type": "home",
+            "blocks": [
+                {
+                    "type": "actions",
+                    "elements": [
+                        {
+                            "type": "button",
+                            "text": {
+                                "type": "plain_text",
+                                "text": "Create Profile",
+                                "emoji": True
+                            },
+                            "value": "click_me_123",
+                            "action_id": "actionId-0"
+                        }
+                    ]
+                }
+            ]
+        }
 }
