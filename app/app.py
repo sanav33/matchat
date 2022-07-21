@@ -13,6 +13,7 @@ def hello_world():
 
 @app.post("/")
 def challenge_handler():
+    
     return request.json["challenge"]
 
 app.register_blueprint(profile_view)
