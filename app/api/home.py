@@ -4,7 +4,7 @@ import requests
 from app.models.profile import Profile
 from pymongo import MongoClient
 from app.block_kits.home import *
-from app.utils.constants import ATLAS_CONNECTION_STR, SLACK_API_URL, API_VIEWS_PUBLISH
+from app.utils.constants import ATLAS_CONNECTION_STR, SLACK_API_URL, API_VIEWS_PUBLISH, SLACK_BOT_TOKEN
 from json import dumps
 from threading import Thread
 
@@ -44,6 +44,7 @@ def send_home_view(slack_id):
         print("send_home_view: user is registered")
         response = requests.post(
             f"{SLACK_API_URL}{API_VIEWS_PUBLISH}",
+            headers={"Authorization": f"Bearer {SLACK_BOT_TOKEN}"}
             json=created_profile_home(
                 Profile(
                     slack_id=slack_id,
