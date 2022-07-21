@@ -13,17 +13,19 @@ def hello_world():
 
 @app.post("/")
 def post_handler():
-    challenge = request.json["challenge"]
-    if challenge:
-        return challenge
+    if "challenge" in request.json:
+        return request.json["challenge"]
     
     return router(request)
 
 def router(request) -> Response:
-    if request.json["type"] == "app_home_opened":
+    print(f"Slack Payload: {request.json}")
+    event_type = request.json["event"]["type"]
+    if event_type == "app_home_opened":
+        print("app_home_opened event received")
         return get_profile_handler(request)
-    elif request.json["type"] == "block_actions":
+    elif event_type == "block_actions":
         return {
         }[request.json["actions"]]
-    elif request.json["type"] == "view_submission":
+    elif event_type == "view_submission":
         return
