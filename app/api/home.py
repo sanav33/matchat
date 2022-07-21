@@ -1,10 +1,10 @@
 from flask import request, Blueprint, Response, json
 from os import environ
 import requests
-from models.profile import Profile
+from app.models.profile import Profile
 from pymongo import MongoClient
-from block_kits.home import *
-from utils.constants import ATLAS_CONNECTION_STR
+from app.block_kits.home import *
+from app.utils.constants import ATLAS_CONNECTION_STR
 from json import dumps
 
 mongo_client = MongoClient(ATLAS_CONNECTION_STR)
