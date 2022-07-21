@@ -1,8 +1,9 @@
 from app.models.profile import Profile
-from app.utils.constants import SLACK_USER_ID
+from app.utils.constants import SLACK_USER_ID, SLACK_BOT_TOKEN
 
 def created_profile_home(profile : Profile):
     return {
+        "token": SLACK_BOT_TOKEN,
         "user_id": SLACK_USER_ID,
         "view": {
             "type": "home",
@@ -56,6 +57,7 @@ def created_profile_home(profile : Profile):
     
 
 def uncreated_profile_home(slack_id): {
+    "token": SLACK_BOT_TOKEN,
     "user_id": slack_id,
     "view": {
         "type": "home",
