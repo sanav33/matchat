@@ -72,7 +72,7 @@ def send_profile_form(trigger_id):
         "view": PROFILE_MODAL_DICT,
     }
 
-    print(f"Sending profile edit modal to slack for trigger_id {trigger_id}")
+    print(f"send_profile_form: Sending profile edit modal to slack for trigger_id {trigger_id}")
     response = requests.post(
         f"{SLACK_API_URL}/api/views.open",
         headers={"Authorization": f"Bearer {SLACK_BOT_TOKEN}"},
@@ -80,8 +80,8 @@ def send_profile_form(trigger_id):
     )
 
     if response.status_code == 200:
-        print("Successfully sent modal")
+        print("send_profile_form: Successfully sent modal")
         return
     
-    print("Unsuccessfully sent modal")
+    print("send_profile_form: Unsuccessfully sent modal")
     return

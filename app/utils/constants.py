@@ -8,4 +8,6 @@ SLACK_BOT_TOKEN = environ.get("SLACK_BOT_TOKEN")
 
 API_VIEWS_PUBLISH = "/api/views.publish"
 
+BLOCK_ID_CREATE_PROFILE = "profile-editProfile"
+
 ACTION_ID_EDIT_PROFILE = "profile-editProfile"
