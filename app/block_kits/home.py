@@ -30,6 +30,7 @@ def created_profile_home(profile : Profile):
             },
             {
                 "type": "section",
+                "block_id": "edit_profile",
                 "text": {
                     "type": "mrkdwn",
                     "text": f"*Preference*\n{'Interns and Full-time Employees' if len(profile.prefers) == 2 else profile.prefers[0]}"
@@ -41,7 +42,8 @@ def created_profile_home(profile : Profile):
                         "text": "Edit Profile",
                         "emoji": True
                     },
-                    "value": "click_me_123",
+                    # "value": "click_me_123",
+                    "value": "opt-in/Yes",
                     "action_id": "button-action"
                 }
             }
