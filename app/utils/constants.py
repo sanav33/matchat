@@ -1,8 +1,8 @@
 from os import environ
 
-SLACK_API_URL = environ.get("SLACK_API_URL")
+PORT = int(environ.get("PORT", 5000))
 ATLAS_CONNECTION_STR = environ.get("ATLAS_CONNECTION_STR")
-
+SLACK_API_URL = environ.get("SLACK_API_URL")
 SLACK_USER_ID = environ.get("SLACK_USER_ID")
 SLACK_BOT_TOKEN = environ.get("SLACK_BOT_TOKEN")
 
