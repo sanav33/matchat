@@ -14,6 +14,8 @@ def hello_world():
 
 @app.post("/")
 def post_handler():
+    print(f"post_handler: handling request {request}")
+    
     if "challenge" in request.json:
         return request.json["challenge"]
     
