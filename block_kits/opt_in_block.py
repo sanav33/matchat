@@ -14,18 +14,19 @@ def genOptInBlock(user):
                                         "type": "button",
                                         "text": {
                                                 "type": "plain_text",
-                                                "text": "Yes!",
+                                                "text": "Yes",
                                                 "emoji": True
                                         },
-                                        "url": "https://google.com"
+                                        "value": "Yes",
                                 },
                                 {
                                         "type": "button",
                                         "text": {
                                                 "type": "plain_text",
-                                                "text": "No...",
+                                                "text": "No",
                                                 "emoji": True
-                                        }
+                                        },
+                                        "value": "Yes",
                                 }
                         ]
                 }
