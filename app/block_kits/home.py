@@ -64,20 +64,40 @@ def uncreated_profile_home(slack_id):
             "type": "home",
             "blocks": [
                 {
-                    "type": "actions",
-                    "elements": [
-                        {
-                            "type": "button",
-                            "text": {
-                                "type": "plain_text",
-                                "text": "Create Profile",
-                                "emoji": True
-                            },
-                            "value": "click_me_123",
-                            "action_id": "actionId-0"
-                        }
-                    ]
-                }
+			"type": "header",
+			"text": {
+				"type": "plain_text",
+				"text": "Create Profile",
+				"emoji": True
+			}
+		},
+		{
+			"type": "section",
+			"text": {
+				"type": "mrkdwn",
+				"text": "It looks like you don't have a MatchaT profile yet!\n Create a profile to get matched"
+			},
+			"accessory": {
+				"type": "image",
+				"image_url": "https://pbs.twimg.com/profile_images/625633822235693056/lNGUneLX_400x400.jpg",
+				"alt_text": "cute cat"
+			}
+		},
+		{
+			"type": "actions",
+			"elements": [
+				{
+					"type": "button",
+					"text": {
+						"type": "plain_text",
+						"text": "Create Profile",
+						"emoji": true
+					},
+					"value": "click_me_123",
+					"action_id": "actionId-0"
+				}
+			]
+		}
             ]
         }
 }
