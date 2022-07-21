@@ -1,34 +1,14 @@
-import bson
 from flask import Blueprint, jsonify
 from os import environ
 import pymongo
-import random
 from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import maximum_bipartite_matching
 
 match_bp = Blueprint('match', __name__)
 
-# TODO: add assignments to met_with field in DB- don't implement until we fix the matching algo
 # TODO: check if ppl are on same team
-# TODO: send slack notifs
 @match_bp.route('/match', methods=['POST'])
 def match():
-    graph, mapping_interns, mapping_ftes = create_graph()
-    graph = csr_matrix(graph)
-    matching = maximum_bipartite_matching(graph, perm_type='column')
-    
-    matches = {}
-    for i in range(len(matching)):
-        if matching[i] >= 0:
-            matches[mapping_interns[i]] = mapping_ftes[matching[i]]
-        else:
-            continue
-
-    print(matches)
-    return jsonify(success=True, status_code=200)
-
-
-def create_graph() -> dict:
     ATLAS_CONNECTION_STR = environ.get("TEST_MONGO_URI")
 
     client = pymongo.MongoClient(ATLAS_CONNECTION_STR)
@@ -60,7 +40,25 @@ def create_graph() -> dict:
             'prefers': fte['prefers'],
             'met_with': fte['met_with'],
         }
- 
+    
+    graph, mapping_interns, mapping_ftes = create_graph(id_to_intern, id_to_fte, interns_list, ftes_list)
+    graph = csr_matrix(graph)
+    matching = maximum_bipartite_matching(graph, perm_type='column')
+    
+    matches = {}
+    for i in range(len(matching)):
+        if matching[i] >= 0:
+            matches[mapping_interns[i]] = mapping_ftes[matching[i]]
+        else:
+            continue
+
+    print(matches)
+
+
+    return jsonify(success=True, status_code=200)
+
+
+def create_graph(id_to_intern, id_to_fte, interns_list, ftes_list) -> dict:
     mapping_interns = {}
     mapping_ftes = {}
 
@@ -92,6 +90,20 @@ def already_met_recently(employee_1, employee_2) -> bool:
             return True
 
     return False
+
+"""
+Adds each match to the met_with field in their MongoDB document, and send Slack notifications to each match/no match.
+"""
+def process_matches(matches, no_matches, client):
+    # add matches to met_with field in MongoDB
+    for intern in matches:
+        client.profiles.update_one(
+            {'_id': intern},
+            {'$push': {'met_with': matches['intern']}}
+        )
+
+    # TODO: send notifications to matches
+    # TODO: send notifications to non matches
 
 
 """
