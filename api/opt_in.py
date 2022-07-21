@@ -15,6 +15,7 @@ opt_in = Blueprint('opt_in', __name__)
 @opt_in.post('/opt_in')
 def opt_in_handler():
     json_body = request.json
+    print(json_body)
     values = json_body["view"]["state"]["values"]
 
     profile = Profile(
