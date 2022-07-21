@@ -14,8 +14,8 @@ def hello_world():
 
 @app.post("/")
 def post_handler():
-    print(f"post_handler: handling request request = {request}")
-    print(f"post_handler: handling request request.json = {request.json}")
+    print(f"post_handler: handling request. request = {request}")
+    print(f"request.json = {request.json}")
 
     if not request.data:
         print("post_handler: received empty request")
