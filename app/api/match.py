@@ -4,12 +4,13 @@ import pymongo
 from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import maximum_bipartite_matching
 
+from app.utils.constants import ATLAS_CONNECTION_STR
+
 match_bp = Blueprint('match', __name__)
 
 # TODO: check if ppl are on same team
 @match_bp.route('/match', methods=['POST'])
 def match():
-    ATLAS_CONNECTION_STR = environ.get("TEST_MONGO_URI")
     client = pymongo.MongoClient(ATLAS_CONNECTION_STR)
     
     graph, mapping_interns, mapping_ftes = create_graph(client)
