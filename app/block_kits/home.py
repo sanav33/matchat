@@ -46,8 +46,7 @@ def created_profile_home(profile : Profile):
                             "text": "Edit Profile",
                             "emoji": True
                         },
-                        # "value": "click_me_123",
-                        "value": "opt-in/Yes",
+                        "value": "click_me_123",
                         "action_id": "button-action"
                     }
                 }
@@ -56,8 +55,8 @@ def created_profile_home(profile : Profile):
 }
     
 
-UNCREATED_PROFILE_HOME = {
-    "user_id": SLACK_USER_ID,
+def uncreated_profile_home(slack_id): {
+    "user_id": slack_id,
     "view": {
         "type": "home",
         "blocks": [
