@@ -1,5 +1,5 @@
 from app.models.profile import Profile
-from app.utils.constants import SLACK_USER_ID, SLACK_BOT_TOKEN
+from app.utils.constants import SLACK_USER_ID, SLACK_BOT_TOKEN, ACTION_ID_EDIT_PROFILE
 
 def created_profile_home(profile : Profile):
     return {
@@ -71,11 +71,14 @@ def uncreated_profile_home(slack_id):
 				"emoji": True
 			}
 		},
+        {
+			"type": "divider"
+		},
 		{
 			"type": "section",
 			"text": {
 				"type": "mrkdwn",
-				"text": "It looks like you don't have a MatchaT profile yet!\n Create a profile to get matched"
+				"text": "It looks like you don't have a MatchaT profile yet!\n\nCreate a profile to get matched"
 			},
 			"accessory": {
 				"type": "image",
@@ -91,10 +94,10 @@ def uncreated_profile_home(slack_id):
 					"text": {
 						"type": "plain_text",
 						"text": "Create Profile",
-						"emoji": true
+						"emoji": True
 					},
 					"value": "click_me_123",
-					"action_id": "actionId-0"
+					"action_id": ACTION_ID_EDIT_PROFILE
 				}
 			]
 		}
