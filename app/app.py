@@ -15,13 +15,14 @@ def hello_world():
 @app.post("/")
 def post_handler():
     print(f"post_handler: handling request {request}")
-    
+
     if "challenge" in request.json:
         return request.json["challenge"]
     
     return router(request)
 
 def router(request) -> Response:
+    print("router: Routing")
     print(f"Slack Payload: {request.json}")
 
     if "event" in request.json and request.json["event"]["type"] == "app_home_opened":
