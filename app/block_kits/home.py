@@ -89,7 +89,7 @@ def uncreated_profile_home(slack_id):
                 },
                 {
                     "type": "actions",
-                    "block_id": "BLOCK_ID_CREATE_PROFILE",
+                    "block_id": BLOCK_ID_CREATE_PROFILE,
                     "elements": [
                         {
                             "type": "button",

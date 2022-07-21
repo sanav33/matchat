@@ -14,9 +14,15 @@ def hello_world():
 
 @app.post("/")
 def post_handler():
-    print(f"post_handler: handling request with body {request.json}")
+    print(f"post_handler: handling request request = {request}")
+    print(f"post_handler: handling request request.json = {request.json}")
+
+    if not request.data:
+        print("post_handler: received empty request")
+        return Response(status=200)
 
     if "challenge" in request.json:
+        print("post_handler: resolving challenge")
         return request.json["challenge"]
     
     return router(request)
