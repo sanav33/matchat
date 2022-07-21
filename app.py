@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 @app.route("/", methods=['GET'])
 def hello_world():
-    return "<p>Hello, World!</p>"
+    return "<p>Hello, Deez!</p>"
 
 app.register_blueprint(profile_view)
 app.register_blueprint(profile)
