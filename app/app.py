@@ -1,8 +1,8 @@
 import profile
 from flask import Flask
-from api.profile import profile, profile_view
-from api.match import match_bp
-from api.home import home
+from app.api.profile import profile, profile_view
+from app.api.match import match_bp
+from app.api.home import home
 
 app = Flask(__name__)
 
@@ -15,5 +15,3 @@ app.register_blueprint(profile_view)
 app.register_blueprint(profile)
 app.register_blueprint(match_bp)
 app.register_blueprint(home)
-
-app.run(port=3000)
