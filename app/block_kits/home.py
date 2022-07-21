@@ -1,4 +1,4 @@
-from models.profile import Profile
+from app.models.profile import Profile
 
 def created_profile_home(profile : Profile):
     return {
