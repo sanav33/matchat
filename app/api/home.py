@@ -9,11 +9,7 @@ from json import dumps
 
 mongo_client = MongoClient(ATLAS_CONNECTION_STR)
 
-home = Blueprint('home', __name__)
-
-# Send a POST request for profile
-@home.post('/home')
-def get_profile_handler():
+def get_profile_handler(request):
     json_body = request.json
     slack_id = json_body["user"]
 

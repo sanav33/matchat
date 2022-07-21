@@ -2,7 +2,7 @@ import profile
 from flask import Flask, request, Response
 from app.api.profile import profile, profile_view
 from app.api.match import match_bp
-from app.api.home import home
+from app.api.home import get_profile_handler
 
 app = Flask(__name__)
 
@@ -12,11 +12,18 @@ def hello_world():
     return "<p>Hello, World!</p>"
 
 @app.post("/")
-def challenge_handler():
+def post_handler():
+    challenge = request.json["challenge"]
+    if challenge:
+        return challenge
     
-    return request.json["challenge"]
+    return router(request)
 
-app.register_blueprint(profile_view)
-app.register_blueprint(profile)
-app.register_blueprint(match_bp)
-app.register_blueprint(home)
+def router(request) -> Response:
+    if request.json["type"] == "app_home_opened":
+        return get_profile_handler(request)
+    elif request.json["type"] == "block_actions":
+        return {
+        }[request.json["actions"]]
+    elif request.json["type"] == "view_submission":
+        return
