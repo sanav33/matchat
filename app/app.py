@@ -19,7 +19,9 @@ def post_handler():
     return router(request)
 
 def router(request) -> Response:
+    print(f"Slack Payload: {request.json}")
     if request.json["type"] == "app_home_opened":
+        print("app_home_opened event received")
         return get_profile_handler(request)
     elif request.json["type"] == "block_actions":
         return {

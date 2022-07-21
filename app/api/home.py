@@ -18,13 +18,14 @@ def get_profile_handler(request):
     profile_doc = profiles_coll.find_one({"slack_id": slack_id})
 
     if profile_doc is None:
-        print("No profile created")
+        print("get_profile_handler: user is not yet registed")
         return Response(
             response=dumps(UNCREATED_PROFILE_HOME),
             status=200,
             content_type="application/json"
         )
     
+    print("get_profile_handler: user is registered")
     return Response(
         response=dumps(created_profile_home(
             Profile(
