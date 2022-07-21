@@ -13,20 +13,30 @@ ENV ATLAS_CONNECTION_STR="mongodb+srv://admin:admin@matchatcluster.mixvt.mongodb
 
 COPY . /matchat-app
 
-
+### CREATING CRON JOB
 # Copy hello-cron file to the cron.d directory
 COPY ./jobs/match /etc/cron.d/match
- 
 # Give execution rights on the cron job
 RUN chmod 0644 /etc/cron.d/match
-
 # Apply cron job
 RUN crontab /etc/cron.d/match
- 
 # Create the log file to be able to run tail
 RUN touch /var/log/cron.log
- 
-# Run the command on container startup
-CMD cron && tail -f /var/log/cron.log
+# Start cron daemon
+# RUN /etc/init.d/cron start
+# ENTRYPOINT ["/etc/init.d/cron", "start"]
 
-CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
+# EXPOSE 5000
+# EXPOSE 8000
+
+# ENTRYPOINT ["python3"]
+# CMD ["main.py"]
+
+# CMD ["gunicorn", "--bind 0.0.0.0:5000", "main:app"]
+# CMD gunicorn main:app 0.0.0.0:5000
+# CMD gunicorn main:app
+# CMD ["gunicorn", "-b", "0.0.0.0:8000", "main:app"]
+# CMD ["gunicorn", "-b", "0.0.0.0:8000", "main:app"]
+
+
+# CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]

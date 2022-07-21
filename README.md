@@ -13,3 +13,7 @@ You only need to run these steps the first time you set up the project!
 1. Make sure virtual env is activated
 2. Run `export FLASK_APP=app`
 3. `flask run`
+
+## Development
+### Docker
+When rebuilding the Docker image on an Apple M1 chip, you can run `docker buildx build --platform linux/amd64 -t matchat-docker:latest .`

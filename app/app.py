@@ -3,9 +3,11 @@ from flask import Flask, request, Response
 from app.api.profile import profile, profile_view
 from app.api.match import match_bp
 from app.api.home import get_profile_handler
+# from app.utils.constants import PORT
 
 app = Flask(__name__)
 
+app.register_blueprint(match_bp)
 
 @app.get("/")
 def hello_world():
@@ -29,3 +31,5 @@ def router(request) -> Response:
         }[request.json["actions"]]
     elif event_type == "view_submission":
         return
+
+# app.run(host='0.0.0.0', port=PORT)
