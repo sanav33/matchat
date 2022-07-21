@@ -10,8 +10,27 @@ match_bp = Blueprint('match', __name__)
 @match_bp.route('/match', methods=['POST'])
 def match():
     ATLAS_CONNECTION_STR = environ.get("TEST_MONGO_URI")
-
     client = pymongo.MongoClient(ATLAS_CONNECTION_STR)
+    
+    graph, mapping_interns, mapping_ftes = create_graph(client)
+    graph = csr_matrix(graph)
+    matching = maximum_bipartite_matching(graph, perm_type='column')
+    
+    matches = {}
+    for i in range(len(matching)):
+        if matching[i] >= 0:
+            matches[mapping_interns[i]] = mapping_ftes[matching[i]]
+        else:
+            continue
+
+    print(matches)
+
+    process_matches(matches, {}, client)
+
+    return jsonify(success=True, status_code=200)
+
+
+def create_graph(client) -> dict:
     db = pymongo.database.Database(client, 'matchat')
     profiles = db['profiles']
     interns_cursor = profiles.find({"opt_in": True, "is_intern": True}, projection=[
@@ -40,25 +59,6 @@ def match():
             'prefers': fte['prefers'],
             'met_with': fte['met_with'],
         }
-    
-    graph, mapping_interns, mapping_ftes = create_graph(id_to_intern, id_to_fte, interns_list, ftes_list)
-    graph = csr_matrix(graph)
-    matching = maximum_bipartite_matching(graph, perm_type='column')
-    
-    matches = {}
-    for i in range(len(matching)):
-        if matching[i] >= 0:
-            matches[mapping_interns[i]] = mapping_ftes[matching[i]]
-        else:
-            continue
-
-    print(matches)
-
-
-    return jsonify(success=True, status_code=200)
-
-
-def create_graph(id_to_intern, id_to_fte, interns_list, ftes_list) -> dict:
     mapping_interns = {}
     mapping_ftes = {}
 
@@ -66,7 +66,7 @@ def create_graph(id_to_intern, id_to_fte, interns_list, ftes_list) -> dict:
     for i, intern in enumerate(interns_list):
         graph.append([])
         for j, fte in enumerate(ftes_list):
-            if already_met_recently(id_to_intern[intern['_id']], id_to_fte[fte['_id']]):
+            if already_met_recently(intern, fte):
                 graph[i].append(0)
             else:
                 graph[i].append(1)
@@ -95,11 +95,19 @@ def already_met_recently(employee_1, employee_2) -> bool:
 Adds each match to the met_with field in their MongoDB document, and send Slack notifications to each match/no match.
 """
 def process_matches(matches, no_matches, client):
+    db = pymongo.database.Database(client, 'matchat')
+    profiles = db['profiles']
+
     # add matches to met_with field in MongoDB
     for intern in matches:
-        client.profiles.update_one(
+        profiles.update_one(
             {'_id': intern},
-            {'$push': {'met_with': matches['intern']}}
+            {'$push': {'met_with': matches[intern]}}
+        )
+
+        profiles.update_one(
+            {'_id': matches[intern]},
+            {'$push': {'met_with': intern}}
         )
 
     # TODO: send notifications to matches
