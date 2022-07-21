@@ -1,19 +1,18 @@
-import bson
 from flask import Blueprint, jsonify
 from os import environ
 import pymongo
-import random
 from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import maximum_bipartite_matching
 
 match_bp = Blueprint('match', __name__)
 
-# TODO: add assignments to met_with field in DB- don't implement until we fix the matching algo
 # TODO: check if ppl are on same team
-# TODO: send slack notifs
 @match_bp.route('/match', methods=['POST'])
 def match():
-    graph, mapping_interns, mapping_ftes = create_graph()
+    ATLAS_CONNECTION_STR = environ.get("TEST_MONGO_URI")
+    client = pymongo.MongoClient(ATLAS_CONNECTION_STR)
+    
+    graph, mapping_interns, mapping_ftes = create_graph(client)
     graph = csr_matrix(graph)
     matching = maximum_bipartite_matching(graph, perm_type='column')
     
@@ -25,13 +24,13 @@ def match():
             continue
 
     print(matches)
+
+    process_matches(matches, {}, client)
+
     return jsonify(success=True, status_code=200)
 
 
-def create_graph() -> dict:
-    ATLAS_CONNECTION_STR = environ.get("TEST_MONGO_URI")
-
-    client = pymongo.MongoClient(ATLAS_CONNECTION_STR)
+def create_graph(client) -> dict:
     db = pymongo.database.Database(client, 'matchat')
     profiles = db['profiles']
     interns_cursor = profiles.find({"opt_in": True, "is_intern": True}, projection=[
@@ -60,7 +59,6 @@ def create_graph() -> dict:
             'prefers': fte['prefers'],
             'met_with': fte['met_with'],
         }
- 
     mapping_interns = {}
     mapping_ftes = {}
 
@@ -68,7 +66,7 @@ def create_graph() -> dict:
     for i, intern in enumerate(interns_list):
         graph.append([])
         for j, fte in enumerate(ftes_list):
-            if already_met_recently(id_to_intern[intern['_id']], id_to_fte[fte['_id']]):
+            if already_met_recently(intern, fte):
                 graph[i].append(0)
             else:
                 graph[i].append(1)
@@ -92,6 +90,28 @@ def already_met_recently(employee_1, employee_2) -> bool:
             return True
 
     return False
+
+"""
+Adds each match to the met_with field in their MongoDB document, and send Slack notifications to each match/no match.
+"""
+def process_matches(matches, no_matches, client):
+    db = pymongo.database.Database(client, 'matchat')
+    profiles = db['profiles']
+
+    # add matches to met_with field in MongoDB
+    for intern in matches:
+        profiles.update_one(
+            {'_id': intern},
+            {'$push': {'met_with': matches[intern]}}
+        )
+
+        profiles.update_one(
+            {'_id': matches[intern]},
+            {'$push': {'met_with': intern}}
+        )
+
+    # TODO: send notifications to matches
+    # TODO: send notifications to non matches
 
 
 """
