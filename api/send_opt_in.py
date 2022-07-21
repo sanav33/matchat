@@ -3,40 +3,9 @@ import logging
 import os
 # Import WebClient from Python SDK (github.com/slackapi/python-slack-sdk)
 from slack_sdk import WebClient
+from block_kits.opt_in_block import genOptInBlock
 from slack_sdk.errors import SlackApiError
 
-def genOptInBlock(user):
-        return [
-            {
-                        "type": "section",
-                        "text": {
-                                "type": "mrkdwn",
-                                "text": "Hello @{name}!\n Would you like to Opt into next week's Coffee Roulette?".format(name = user['name'])
-                        }
-                },
-                {
-                        "type": "actions",
-                        "elements": [
-                                {
-                                        "type": "button",
-                                        "text": {
-                                                "type": "plain_text",
-                                                "text": "Yes!",
-                                                "emoji": True
-                                        },
-                                        "url": "https://google.com"
-                                },
-                                {
-                                        "type": "button",
-                                        "text": {
-                                                "type": "plain_text",
-                                                "text": "No...",
-                                                "emoji": True
-                                        }
-                                }
-                        ]
-                }
-        ]
 
 def sendOptInHelper(client, logger, user):
     try:
