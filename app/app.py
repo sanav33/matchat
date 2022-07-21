@@ -13,9 +13,8 @@ def hello_world():
 
 @app.post("/")
 def post_handler():
-    challenge = request.json["challenge"]
-    if challenge:
-        return challenge
+    if "challenge" in request.json:
+        return request.json["challenge"]
     
     return router(request)
 
