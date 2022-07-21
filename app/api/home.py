@@ -37,6 +37,7 @@ def send_home_view(slack_id):
         print("get_profile_handler: user is not yet registed")
         response = requests.post(
             f"{SLACK_API_URL}{API_VIEWS_PUBLISH}",
+            headers={"Authorization": f"Bearer {SLACK_BOT_TOKEN}"},
             json=uncreated_profile_home(slack_id)
         )
     
