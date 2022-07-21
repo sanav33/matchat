@@ -44,7 +44,7 @@ def send_home_view(slack_id):
         print("send_home_view: user is registered")
         response = requests.post(
             f"{SLACK_API_URL}{API_VIEWS_PUBLISH}",
-            headers={"Authorization": f"Bearer {SLACK_BOT_TOKEN}"}
+            headers={"Authorization": f"Bearer {SLACK_BOT_TOKEN}"},
             json=created_profile_home(
                 Profile(
                     slack_id=slack_id,
