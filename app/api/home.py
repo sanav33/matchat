@@ -65,7 +65,6 @@ def send_home_view(slack_id):
     if response.status_code == 200:
         print("send_home_view: home tab publishing succesful")
     else:
-        print("send_home_view: home tab publishing UNsuccesful")
+        print("send_home_view: home tab publishing Unsuccesful")
     
     return
-    
