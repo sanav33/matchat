@@ -30,7 +30,7 @@ def created_profile_home(profile : Profile):
             },
             {
                 "type": "section",
-                "block_id": "edit_profile"
+                "block_id": "edit_profile",
                 "text": {
                     "type": "mrkdwn",
                     "text": f"*Preference*\n{'Interns and Full-time Employees' if len(profile.prefers) == 2 else profile.prefers[0]}"
