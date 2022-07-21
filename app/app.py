@@ -33,6 +33,8 @@ def router(request) -> Response:
     # elif event_type == "view_submission":
     #     return
 
+    return
+
 BLOCK_ACTIONS_DISPATCHER = {
     ACTION_ID_EDIT_PROFILE: profile_view_handler
 }
