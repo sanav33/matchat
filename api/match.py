@@ -14,10 +14,18 @@ match_bp = Blueprint('match', __name__)
 @match_bp.route('/match', methods=['POST'])
 def match():
 
-    graph, mappings = create_graph()
+    graph, mapping_interns, mapping_ftes = create_graph()
     graph = csr_matrix(graph)
-    print(maximum_bipartite_matching(graph, perm_type='column'))
+    matching = maximum_bipartite_matching(graph, perm_type='column')
     
+    matches = {}
+    for i in range(len(matching)): # [ 0  1  2 -1 -1]
+        if matching[i] >= 0:
+            matches[mapping_interns[i]] = mapping_ftes[matching[i]]
+        else:
+            continue
+
+    print(matches)
     return jsonify(success=True, status_code=200)
 
 
@@ -27,26 +35,52 @@ def create_graph() -> dict:
     client = pymongo.MongoClient(ATLAS_CONNECTION_STR)
     db = pymongo.database.Database(client, 'matchat')
     profiles = db['profiles']
-    interns = list(profiles.find({"opt_in": True, "is_intern": True}, projection=[
-        "prefers", "met_with", "name"]))
-    ftes = list(profiles.find({"opt_in": True, "is_intern": False}, projection=[
-        "prefers", "met_with", "name"]))
-    
-    # fte_ids = {str(f['_id']): 1 for f in ftes}
+    interns_cursor = profiles.find({"opt_in": True, "is_intern": True}, projection=[
+        "prefers", "met_with", "name"])
+    ftes_cursor = profiles.find({"opt_in": True, "is_intern": False}, projection=[
+        "prefers", "met_with", "name"])
 
-    legal_matches = {}
-    mappings = {}
-    graph = [[1 for _ in ftes] for _ in interns]
+    interns_list = list(interns_cursor)
+    ftes_list = list(ftes_cursor)
 
-    for i in range(len(interns)):
-        mappings[interns[i]['_id']] = i
+    interns_cursor.rewind()
+    ftes_cursor.rewind()
+
+    id_to_intern = {}
+    id_to_fte = {}
+    for intern in interns_cursor:
+        id_to_intern[intern['_id']] = {
+            'name': intern['name'],
+            'prefers': intern['prefers'],
+            'met_with': intern['met_with'],
+        }
+
+    for fte in ftes_cursor:
+        id_to_fte[fte['_id']] = {
+            'name': fte['name'],
+            'prefers': fte['prefers'],
+            'met_with': fte['met_with'],
+        }
+ 
+    mapping_interns = {}
+    mapping_ftes = {}
+
+    graph = []
+    for i, intern in enumerate(interns_list):
+        graph.append([])
+        for j, fte in enumerate(ftes_list):
+            if already_met_recently(id_to_intern[intern['_id']], id_to_fte[fte['_id']]):
+                graph[i].append(0)
+            else:
+                graph[i].append(1)
+
+    for i in range(len(interns_list)):
+        mapping_interns[i] = interns_list[i]['_id']
     
-    for j in range(len(ftes)):
-        mappings[ftes[j]['_id']] = j
+    for j in range(len(ftes_list)):
+        mapping_ftes[j] = ftes_list[j]['_id']
     
-    # for i in interns:
-    #     legal_matches[str(i['_id'])] = fte_ids.copy()
-    return graph, mappings
+    return graph, mapping_interns, mapping_ftes
 
 
 def already_met_recently(employee_1, employee_2) -> bool:
