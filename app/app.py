@@ -3,11 +3,7 @@ from flask import Flask, request, Response
 from app.api.profile import post_profile_handler, profile_view_handler
 from app.api.match import match_bp
 from app.api.home import get_profile_handler
-<<<<<<< HEAD
 from app.utils.constants import ACTION_ID_EDIT_PROFILE
-=======
-# from app.utils.constants import PORT
->>>>>>> ea6120fbab4a2d17b5a8733852d863166590f99a
 
 app = Flask(__name__)
 
@@ -20,7 +16,6 @@ def hello_world():
 @app.post("/")
 def post_handler():
     print(f"post_handler: handling request. request = {request}")
-    print(f"request.json = {request.payload}")
 
     if not request.data:
         print("post_handler: received empty request")
