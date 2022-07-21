@@ -59,6 +59,9 @@ def send_home_view(slack_id):
             )
         )
 
+    print(f"send_home_view: request sent: {response.request.body}")
+    print(f"send_home_view: response received: {response.text}")
+
     if response.status_code == 200:
         print("send_home_view: home tab publishing succesful")
     else:
