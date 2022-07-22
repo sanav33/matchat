@@ -98,6 +98,7 @@ def uncreated_profile_home(slack_id):
                                 "text": "Create Profile",
                                 "emoji": True
                             },
+                            "dispatch_action": True,
                             "value": "click_me_123",
                             "action_id": ACTION_ID_EDIT_PROFILE
                         }
