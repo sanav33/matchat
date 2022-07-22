@@ -143,10 +143,10 @@ def send_match_notification(user_slack_id, user_matched_with_slack_id, all_users
     except SlackApiError:
         jsonify(success=False, status_code=500)
 
-def send_no_match_notification(user_slack_id, all_users, slack_client):
+def send_no_match_notification(user_slack_id, slack_client):
     try:
         slack_client.chat_postMessage(
-            channel=all_users[user_slack_id],
+            channel=user_slack_id,
             text="You did not get a match this week.",
             blocks=no_match_message_block()
         )
