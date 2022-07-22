@@ -17,10 +17,11 @@ def hello_world():
 def post_handler():
     print(f"post_handler: handling request. request = {request}")
 
-    if not request.get_data():
+    if not request.data:
         print("post_handler: received empty request")
         return Response(status=200)
 
+    print(f"post_handler: slack payload: {request.json}")
     if "challenge" in request.json:
         print("post_handler: resolving challenge")
         return request.json["challenge"]
@@ -29,7 +30,6 @@ def post_handler():
 
 def router(request) -> Response:
     print("router: Routing")
-    print(f"Slack Payload: {request.json}")
 
     if "event" in request.json and request.json["event"]["type"] == "app_home_opened":
         print("app_home_opened event received")
