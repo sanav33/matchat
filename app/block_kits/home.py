@@ -63,15 +63,11 @@ def uncreated_profile_home(slack_id):
         "user_id": slack_id,
         "view": {
             "type": "home",
+            "title": {
+                "type": "plain_text",
+                "text": "Create Profile"
+            },
             "blocks": [
-                {
-                    "type": "header",
-                    "text": {
-                        "type": "plain_text",
-                        "text": "Create Profile",
-                        "emoji": True
-                    }
-                },
                 {
                     "type": "divider"
                 },
@@ -81,28 +77,38 @@ def uncreated_profile_home(slack_id):
                         "type": "mrkdwn",
                         "text": "It looks like you don't have a MatchaT profile yet!\n\nCreate a profile to get matched."
                     },
+                    # "accessory": {
+                    #     "type": "image",
+                    #     "image_url": "https://pbs.twimg.com/profile_images/625633822235693056/lNGUneLX_400x400.jpg",
+                    #     "alt_text": "cute cat"
+                    # }
                     "accessory": {
-                        "type": "image",
-                        "image_url": "https://pbs.twimg.com/profile_images/625633822235693056/lNGUneLX_400x400.jpg",
-                        "alt_text": "cute cat"
+                        "type": "button",
+                        "text": {
+                            "type": "plain_text",
+                            "text": "Create Profile",
+                            "emoji": True
+                        },
+                        "value": "click_me_123",
+                        "action_id": ACTION_ID_EDIT_PROFILE
                     }
                 },
-                {
-                    "type": "actions",
-                    "block_id": BLOCK_ID_CREATE_PROFILE,
-                    "elements": [
-                        {
-                            "type": "button",
-                            "text": {
-                                "type": "plain_text",
-                                "text": "Create Profile",
-                                "emoji": True
-                            },
-                            "value": "click_me_123",
-                            "action_id": ACTION_ID_EDIT_PROFILE
-                        }
-                    ]
-                }
+                # {
+                #     "type": "actions",
+                #     "block_id": BLOCK_ID_CREATE_PROFILE,
+                #     "elements": [
+                #         {
+                #             "type": "button",
+                #             "text": {
+                #                 "type": "plain_text",
+                #                 "text": "Create Profile",
+                #                 "emoji": True
+                #             },
+                #             "value": "click_me_123",
+                #             "action_id": ACTION_ID_EDIT_PROFILE
+                #         }
+                #     ]
+                # }
             ]
         }
 }
