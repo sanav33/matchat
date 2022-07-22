@@ -13,24 +13,22 @@ match_bp = Blueprint('match', __name__)
 # TODO: check if ppl are on same team
 @match_bp.route('/match', methods=['POST'])
 def match():
-    ATLAS_CONNECTION_STR = environ.get("TEST_MONGO_URI")
-    client = pymongo.MongoClient(ATLAS_CONNECTION_STR)
+    client = pymongo.MongoClient("mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.5.0")
     
     graph, mapping_interns, mapping_ftes = create_graph(client)
     graph = csr_matrix(graph)
     matching = maximum_bipartite_matching(graph, perm_type='column')
     
     matches = {}
-    no_match_interns = set()
+    no_match_interns = []
     for i in range(len(matching)):
         if matching[i] >= 0:
             matches[mapping_interns[i]] = mapping_ftes[matching[i]]
         else:
-            no_match_interns.add(mapping_interns[i])
+            no_match_interns.append(mapping_interns[i])
 
     print(matches)
-    no_match_interns = [mapping_interns[i] for i in no_match_interns]
-    no_match_ftes = [mapping_ftes[i] for i in set(mapping_ftes.keys()).difference(set(matching.values()))]
+    no_match_ftes = [mapping_ftes[i] for i in set(mapping_ftes.keys()).difference(set(matching))]
     no_matches = no_match_interns + no_match_ftes
     process_matches(matches, no_matches, client)
 
@@ -120,7 +118,7 @@ def process_matches(matches, no_matches, client):
         )
 
     # send notifications to matches
-    users_list = client.users_list()['members']
+    users_list = slack_client.users_list()['members']
     all_users = {}
     for user in users_list:
         all_users[user['id']] = user
@@ -131,25 +129,26 @@ def process_matches(matches, no_matches, client):
         send_match_notification(m1, m2, all_users, slack_client)
         
     # send notifications to non matches
-    for k in no_matches.items():
-        m1 = profiles.find_one({"_id": k}, projection=["slack_id"])
-        m2 = profiles.find_one({"_id": v}, projection=["slack_id"])
-        send_no_match_notification(m1, m2, all_users, slack_client)
+    for k in no_matches:
+        m = profiles.find_one({"_id": k}, projection=["slack_id"])
+        send_no_match_notification(m['slack_id'], all_users, slack_client)
 
 def send_match_notification(user_slack_id, user_matched_with_slack_id, all_users, slack_client):
     try:
         slack_client.chat_postMessage(
             channel=all_users[user_slack_id],
+            text="You got a match!",
             blocks=match_message_block(user_matched_with_slack_id)
         )
     except SlackApiError:
         jsonify(success=False, status_code=500)
 
-def send_no_match_notification(user_slack_id, user_matched_with_slack_id, all_users, slack_client):
+def send_no_match_notification(user_slack_id, all_users, slack_client):
     try:
         slack_client.chat_postMessage(
             channel=all_users[user_slack_id],
-            blocks=no_match_message_block(user_matched_with_slack_id)
+            text="You did not get a match this week.",
+            blocks=no_match_message_block()
         )
     except SlackApiError:
         jsonify(success=False, status_code=500)
