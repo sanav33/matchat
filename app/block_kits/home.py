@@ -68,7 +68,7 @@ def uncreated_profile_home(slack_id):
                     "type": "header",
                     "text": {
                         "type": "plain_text",
-                        "text": "Create Profile",
+                        "text": "Create Profile test",
                         "emoji": True
                     }
                 },
