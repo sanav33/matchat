@@ -1,10 +1,10 @@
 from threading import Thread
 from flask import request, Blueprint, Response
-from api.profile import update_profile
+from app.api.profile import update_profile
 from os import environ
 import requests
-from block_kits.profile import PROFILE_MODAL_DICT
-from models.profile import Profile
+from app.block_kits.profile import PROFILE_MODAL_DICT
+from app.models.profile import Profile
 from pymongo import MongoClient
 
 ATLAS_CONNECTION_STR = environ.get("ATLAS_CONNECTION_STR")

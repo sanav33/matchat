@@ -1,44 +1,11 @@
 # TO BE RENAMED TO send_opt_in.py
 import logging
 import os
+from flask import request, Blueprint, Response
 # Import WebClient from Python SDK (github.com/slackapi/python-slack-sdk)
 from slack_sdk import WebClient
-# from block_kits.opt_in_block import genOptInBlock
+from app.block_kits.opt_in_block import genOptInBlock
 from slack_sdk.errors import SlackApiError
-
-def genOptInBlock(user):
-        return [
-            {
-                        "type": "section",
-                        "text": {
-                                "type": "mrkdwn",
-                                "text": "Hello @{name}!\n Would you like to Opt into next week's Coffee Roulette?".format(name = user['name'])
-                        }
-                },
-                {
-                        "type": "actions",
-                        "elements": [
-                                {
-                                        "type": "button",
-                                        "text": {
-                                                "type": "plain_text",
-                                                "text": "Yes",
-                                                "emoji": True
-                                        },
-                                        "value": "Yes",
-                                },
-                                {
-                                        "type": "button",
-                                        "text": {
-                                                "type": "plain_text",
-                                                "text": "No",
-                                                "emoji": True
-                                        },
-                                        "value": "Yes",
-                                }
-                        ]
-                }
-        ]
 
 
 def sendOptInHelper(client, logger, user):
@@ -54,19 +21,16 @@ def sendOptInHelper(client, logger, user):
     except SlackApiError as e:
         logger.error(f"Error posting message: {e}") 
 
-def sendOptIn(client, logger):
+send_opt_in = Blueprint('send_opt_in', __name__)
+@send_opt_in.post('/send_opt_in')
+def sendOptIn():
     try:
-        result = client.users_list()
-        users_array = result["members"]
+        client, logger = WebClient(token=os.environ.get("SLACK_BOT_TOKEN")), logging.getLogger(__name__)
+        users_array = client.users_list()["members"]
         for user in users_array:
-            if (user["id"] == "U03Q4H2MNCT"):
-            # if (True):
                 sendOptInHelper(client, logger, user)
+        return Response(status=200)
     except SlackApiError as e:
         logger.error("Error creating conversation: {}".format(e))
-
-if __name__ == '__main__':
-    client = WebClient(token=os.environ.get("SLACK_BOT_TOKEN"))
-    logger = logging.getLogger(__name__)
-    sendOptIn(client, logger)
+        return Response(status=400) 
 
