@@ -68,7 +68,7 @@ def uncreated_profile_home(slack_id):
                     "type": "header",
                     "text": {
                         "type": "plain_text",
-                        "text": "Create Profile test",
+                        "text": "Create Profile",
                         "emoji": True
                     }
                 },
@@ -79,7 +79,7 @@ def uncreated_profile_home(slack_id):
                     "type": "section",
                     "text": {
                         "type": "mrkdwn",
-                        "text": "It looks like you don't have a MatchaT profile yet!\n\nCreate a profile to get matched"
+                        "text": "It looks like you don't have a MatchaT profile yet!\n\nCreate a profile to get matched."
                     },
                     "accessory": {
                         "type": "image",
