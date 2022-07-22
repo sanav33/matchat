@@ -17,6 +17,7 @@ def hello_world():
 def post_handler():
     print(f"post_handler: handling request. request = {request}")
 
+    print(request.json)
     if not request.data:
         print("post_handler: received empty request")
         return Response(status=200)
