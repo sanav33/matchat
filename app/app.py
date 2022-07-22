@@ -39,6 +39,7 @@ def router(request) -> Response:
         print("block_actions event received")
         action_id = request.json["actions"][0]["action_id"]
         return BLOCK_ACTIONS_DISPATCHER[action_id](request)
+        
     # elif event_type == "view_submission":
     #     return
 
