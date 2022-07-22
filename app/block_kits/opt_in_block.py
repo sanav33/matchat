@@ -17,6 +17,7 @@ def genOptInBlock(user):
                                                 "text": "Yes",
                                                 "emoji": True
                                         },
+                                        "action_id": "opt_in_button",
                                         "value": "Yes",
                                 },
                                 {
@@ -26,6 +27,7 @@ def genOptInBlock(user):
                                                 "text": "No",
                                                 "emoji": True
                                         },
+                                        "action_id": "opt_in_button",
                                         "value": "Yes",
                                 }
                         ]

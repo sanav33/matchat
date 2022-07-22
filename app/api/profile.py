@@ -1,9 +1,9 @@
 from threading import Thread
-from flask import request, Blueprint, Response
+from flask import request, Blueprint, Response, json
 from os import environ
 import requests
-from block_kits.profile import PROFILE_MODAL_DICT
-from models.profile import Profile
+from app.block_kits.profile import PROFILE_MODAL_DICT
+from app.models.profile import Profile
 from pymongo import MongoClient
 
 SLACK_API_URL = environ.get("SLACK_API_URL")
@@ -51,12 +51,6 @@ def update_profile(profile):
 
     print(f"updated profiles collections {acknowledged}")
     return
-
-# Get information from profile. TODO: this
-@profile.get('/profile')
-def get_profile_handler(profile):
-    pass
-    
 
 
 profile_view = Blueprint('profile_view', __name__)
