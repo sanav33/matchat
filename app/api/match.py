@@ -6,14 +6,14 @@ from scipy.sparse.csgraph import maximum_bipartite_matching
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 
-from app.utils.constants import SLACK_BOT_TOKEN
+from app.utils.constants import ATLAS_CONNECTION_STR, SLACK_BOT_TOKEN
 
 match_bp = Blueprint('match', __name__)
 
 # TODO: check if ppl are on same team
 @match_bp.route('/match', methods=['POST'])
 def match():
-    client = pymongo.MongoClient("mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.5.0")
+    client = pymongo.MongoClient(ATLAS_CONNECTION_STR)
     
     graph, mapping_interns, mapping_ftes = create_graph(client)
     graph = csr_matrix(graph)
